@@ -1,0 +1,10 @@
+---
+
+ansible_host: 192.168.1.11
+ansible_user: automaton
+ansible_ssh_pass: test1234
+ansible_become: True
+ansible_become_user: root
+ansible_become_password: test1234
+
+...
