@@ -1,0 +1,26 @@
+---
+
+- name: Debian Playbook Update, Upgrade Server, Install NMAP, GIT and Network Tools
+  hosts:  debian
+  become: True
+  become_user: root
+
+  tasks:
+
+  - name: Install Nmap
+    apt:
+      pkg: nmap
+      state: absent
+
+
+  - name: Install GIT
+    apt:
+      pkg: git
+      state: absent
+
+
+  - name: Install Network Tools(ifconfig)
+    apt:
+      pkg: net-tools
+      state: absent
+...
