@@ -1,0 +1,10 @@
+---
+## Playbook to configure routers using a template .txt
+
+- hosts: routers
+  gather_facts: false
+
+  tasks:
+  - name: Push template config to L3 Switches specified in the hosts files
+    ios_config:
+      src: "Ansible_Playbooks/cisco/IOS/MMM/switchl3/config_templates/mmm_switch_template.txt"

@@ -1,0 +1,266 @@
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec localtime
+service password-encryption
+service call-home
+platform punt-keepalive disable-kernel-core
+!
+hostname SWITCH-XYZ
+!
+!
+!
+logging buffered 10000
+logging console informational
+enable secret 9 $14$RErx$b59xKhnwdoxhUU$WNxRJs7vqccJlgf89Kt1Q7NqWXlD.UgDoIDzwnOt/Lw
+enable password 7 05082A0E0A02181D0B0A
+!
+aaa new-model
+!
+!
+aaa authentication login CONSOLE local
+aaa authorization exec CONSOLE local
+!
+!
+!
+!
+!
+!
+aaa session-id common
+clock timezone AST -4
+!
+!
+!
+ip routing
+!
+!
+!
+!
+!
+ip name-server 192.168.125.10 192.168.101.93
+no ip domain lookup
+ip domain name pr.mmmhc.com
+no ip cef optimize neighbor resolution
+!
+!
+!
+ip dhcp snooping vlan 100,10,20
+ip dhcp snooping
+ip arp inspection vlan 100
+login on-success log
+!
+!
+ip arp inspection filter trustedHost vlan  100
+arp access-list trustedHost
+ permit ip host xx.xx.xx.xx mac host 1234.5678.90AB
+!
+!
+!
+!
+!
+vtp mode off
+no device-tracking logging theft
+!
+flow record NTA-RECORD
+ match datalink ethertype
+ match datalink mac source address input
+ match datalink mac destination address input
+ match ipv4 tos
+ match ipv4 protocol
+ match ipv4 source address
+ match ipv4 destination address
+ match transport source-port
+ match transport destination-port
+ collect transport tcp flags
+ collect interface input
+ collect counter bytes long
+ collect counter packets long
+!
+!
+flow exporter NTA-EXPORTER
+ destination 192.168.200.75
+ source Vlan250
+ transport udp 2055
+!
+!
+flow monitor NTA-MONITOR
+ exporter NTA-EXPORTER
+ cache timeout active 60
+ record NTA-RECORD
+!
+sampler NTA-FLOWSAMPLER
+ mode random 1 out-of 500
+!
+!
+!
+license boot level network-advantage addon dna-advantage
+!
+!
+diagnostic bootup level minimal
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+no spanning-tree vlan 10,20,50
+memory free low-watermark processor 134384
+!
+username admin privilege 15 secret c1sc0123
+username mmmsupport privilege 15 password 7 0307770A2D4177585C06
+!
+redundancy
+ mode sso
+!
+!
+!
+!
+!
+transceiver type all
+ monitoring
+!
+vlan 10
+ name MPLS.WAN.AT&T
+!
+vlan 20
+ name MPLS.WAN.CLARO
+!
+vlan 39
+ name DVR.Access.Control
+!
+!
+vlan 100
+ name DATA
+!
+vlan 200
+ name VoIP
+!
+!
+vlan 250
+name Manejo
+!
+!
+no errdisable detect cause gbic-invalid
+errdisable recovery cause udld
+errdisable recovery cause bpduguard
+errdisable recovery cause security-violation
+errdisable recovery cause channel-misconfig
+errdisable recovery cause pagp-flap
+errdisable recovery cause dtp-flap
+errdisable recovery cause link-flap
+errdisable recovery cause sfp-config-mismatch
+errdisable recovery cause gbic-invalid
+errdisable recovery cause l2ptguard
+errdisable recovery cause psecure-violation
+errdisable recovery cause port-mode-failure
+errdisable recovery cause dhcp-rate-limit
+errdisable recovery cause pppoe-ia-rate-limit
+errdisable recovery cause mac-limit
+errdisable recovery cause vmps
+errdisable recovery cause storm-control
+errdisable recovery cause inline-power
+errdisable recovery cause arp-inspection
+errdisable recovery cause link-monitor-failure
+errdisable recovery cause oam-remote-failure
+errdisable recovery cause loopback
+errdisable recovery cause psp
+errdisable detect cause arp-inspection
+errdisable recovery cause arp-inspection
+errdisable recovery interval 120
+!
+!
+!
+!
+!
+int vlan 250
+desc Manejo
+no autostate
+ip address 10.250.14.1 255.255.255.0
+no sh
+!
+interface loopback 0
+desc OSPF Router-ID
+ip address 10.250..0.23 255.255.255.255
+!
+ip forward-protocol nd
+no ip http server
+ip http secure-server
+ip http authentication local
+no ip http secure-server
+ip ssh version 2
+cdp run
+lldp run
+!
+!
+logging host 192.168.101.175
+!
+snmp-server community netprincipal RO
+snmp-server location XX**@@**XX
+snmp-server contact David Echevarria
+snmp-server enable traps ospf cisco-specific errors
+snmp-server enable traps ospf cisco-specific retransmit
+!
+!
+!
+control-plane
+ service-policy input system-cpp-policy
+!
+banner login ^
+
+********************************************************
+               THIS IS A SECURED DEVICE
+               AUTHORIZED PERSONEL ONLY
+********************************************************
+Unauthorized use is prohibited by law and may be subject
+to civil and/or  criminal penalties.  The system may be
+logged  or  monitored  without  further  notice  and the
+resulting  logs  may  be  used  as  evidence  in  court.
+********************************************************
+
+^C
+banner motd ^
+                        :/.
+                     `:shhy+.
+                   `:shhhhhhy+.
+                 `:yhhhhhhhhhhy+.
+               `/yhhhhhhhhhhhhhhy+.
+             `/yhhhhhhhhhhhyyso+/:-`
+           `/yhhhhhhhyo+:-.`
+         `/yhhhhyo/-```..--:::///////:::.
+       .+yhhyo+/+ossyyhhhhhhhhhhhhhhhhhhy+.
+     `+yhhhyhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh+.
+   .+yhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh+.
+  ./++++++++++++++++++++++++++++++++++++++++++/.
+  /+/`      `/+/ `/+/`      `/+: `/+:`      .++-
+  shhs.    .shhs `yhhs`    -yhho .yhho`    -yhh/
+  shhhy:  -yhhhs `yhhhy-  :hhhho .yhhhs. `/hhhh/
+  shhohh+/hhoyhs `yhh+hh/+hhohho .yhyohy:ohyohh/
+  shh.-yhhy:.yhs `yhh`:hhhy--hho .yhs`/hhhs.:hh/
+  shh. .oo- .yhs `yhh` -so. -yho .yhs` -s+` :hh/
+  ://`      `:/: `://`      `//- `:/:       .//-
+ If you are not an authorized user, disconnect now
+^C
+!
+line con 0
+ exec-timeout 15 0
+ privilege level 15
+ logging synchronous
+ login authentication CONSOLE
+ stopbits 1
+line vty 0 4
+ exec-timeout 15 0
+ authorization exec VTY
+ logging synchronous
+ login authentication CONSOLE
+ length 0
+ transport input ssh
+ transport output ssh
+line vty 5 15
+ exec-timeout 15 0
+ logging synchronous level all
+ transport input none
+!
+ntp server 192.168.101.100
+!
+!
+!
+!
+!
+!
+end
