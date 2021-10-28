@@ -11,8 +11,6 @@ hostname SWITCH-XYZ
 !
 logging buffered 10000
 logging console informational
-enable secret 9 $14$RErx$b59xKhnwdoxhUU$WNxRJs7vqccJlgf89Kt1Q7NqWXlD.UgDoIDzwnOt/Lw
-enable password 7 05082A0E0A02181D0B0A
 !
 aaa new-model
 !
@@ -32,14 +30,7 @@ clock timezone AST -4
 !
 ip routing
 !
-!
-!
-!
-!
-ip name-server 192.168.125.10 192.168.101.93
-no ip domain lookup
-ip domain name pr.mmmhc.com
-no ip cef optimize neighbor resolution
+
 !
 !
 !
